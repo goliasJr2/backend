@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  //output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id          String   @id @default(uuid())
+  nome        String
+  email       String   @unique
+  senha       String
+  telefone    String?
+  tipo        TipoUsuario
+  cidade      String
+  provincia    String
+  latitude    Float
+  longitude   Float
+  slug        String   @unique
+
+  veterinario Veterinario?
+  produtor    Produtor?
+  clinica     Clinica?
+  petshop     Petshop?
+  farmacia    Farmacia?
+  lojaRacao   LojaRacao?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum TipoUsuario {
+  VETERINARIO
+  PRODUTOR
+  CLINICA
+  PETSHOP
+  FARMACIA
+  LOJA_RACAO
+}
+
+model Veterinario {
+  id             String   @id @default(uuid())
+  omvm           String
+  especialidades String[]
+  endereco       String?
+  usuarioId      String   @unique
+  usuario        Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model Produtor {
+  id            String   @id @default(uuid())
+  tipoProducao  String
+  usuarioId     String   @unique
+  usuario       Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model Clinica {
+  id         String   @id @default(uuid())
+  descricao  String?
+  usuarioId  String   @unique
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model Petshop {
+  id         String   @id @default(uuid())
+  descricao  String?
+  usuarioId  String   @unique
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model Farmacia {
+  id         String   @id @default(uuid())
+  descricao  String?
+  usuarioId  String   @unique
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+}
+
+model LojaRacao {
+  id         String   @id @default(uuid())
+  descricao  String?
+  usuarioId  String   @unique
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+}
