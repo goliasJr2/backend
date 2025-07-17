@@ -52,13 +52,61 @@ export async function atualizarUsuario(id: string, dados: {
   return atualizado;
 }
 
-export async function atualizarExtensaoUsuario(usuarioId: string, tipo: string, dados: {
-  omvm?: string;
-  especialidades?: string[];
-  tipoProducao?: string;
-  descricao?: string;
-}) {
-    const tipoFormatado = tipo.toUpperCase();
+// export async function atualizarExtensaoUsuario(usuarioId: string, tipo: string, dados: {
+//   omvm?: string;
+//   especialidades?: string[];
+//   tipoProducao?: string;
+//   descricao?: string;
+// }) {
+//     const tipoFormatado = tipo.toUpperCase();
+//   switch (tipoFormatado) {
+//     case "VETERINARIO":
+//       return await prisma.veterinario.update({
+//         where: { usuarioId },
+//         data: {
+//           omvm: dados.omvm,
+//           especialidades: dados.especialidades,
+//         },
+//       });
+
+//     case "PRODUTOR":
+//       return await prisma.produtor.update({
+//         where: { usuarioId },
+//         data: {
+//           tipoProducao: dados.tipoProducao,
+//         },
+//       });
+
+//     case "CLINICA":
+//     case "PETSHOP":
+//     case "FARMACIA":
+//     case "LOJA_RACAO":
+//       const modelo = tipo.toLowerCase(); // clinica, petshop etc.
+//       return await prisma[modelo].update({
+//         where: { usuarioId },
+//         data: {
+//           descricao: dados.descricao,
+//         },
+//       });
+
+//     default:
+//       throw new Error("Tipo de usuário não suportado.");
+//   }
+// }
+
+
+export async function atualizarExtensaoUsuario(
+  usuarioId: string,
+  tipo: string,
+  dados: {
+    omvm?: string;
+    especialidades?: string[];
+    tipoProducao?: string;
+    descricao?: string;
+  }
+) {
+  const tipoFormatado = tipo.toUpperCase();
+
   switch (tipoFormatado) {
     case "VETERINARIO":
       return await prisma.veterinario.update({
@@ -81,16 +129,64 @@ export async function atualizarExtensaoUsuario(usuarioId: string, tipo: string, 
     case "PETSHOP":
     case "FARMACIA":
     case "LOJA_RACAO":
-      const modelo = tipo.toLowerCase(); // clinica, petshop etc.
-      return await prisma[modelo].update({
-        where: { usuarioId },
-        data: {
-          descricao: dados.descricao,
-        },
-      });
+      type ModeloExtensao = "clinica" | "petshop" | "farmacia" | "lojaRacao";
+
+
+      let modelo: ModeloExtensao;
+
+      switch (tipoFormatado) {
+        case "CLINICA":
+          modelo = "clinica";
+          break;
+        case "PETSHOP":
+          modelo = "petshop";
+          break;
+        case "FARMACIA":
+          modelo = "farmacia";
+          break;
+        case "LOJA_RACAO":
+          modelo = "lojaRacao";
+          break;
+        default:
+          throw new Error("Tipo de usuário não suportado.");
+      }
+
+      switch (modelo) {
+        case "clinica":
+          return await prisma.clinica.update({
+            where: { usuarioId },
+            data: {
+              descricao: dados.descricao,
+            },
+          });
+        case "petshop":
+          return await prisma.petshop.update({
+            where: { usuarioId },
+            data: {
+              descricao: dados.descricao,
+            },
+          });
+        case "farmacia":
+          return await prisma.farmacia.update({
+            where: { usuarioId },
+            data: {
+              descricao: dados.descricao,
+            },
+          });
+        case "lojaRacao":
+          return await prisma.lojaRacao.update({
+            where: { usuarioId },
+            data: {
+              descricao: dados.descricao,
+            },
+          });
+        default:
+          throw new Error("Tipo de usuário não suportado.");
+      }
 
     default:
       throw new Error("Tipo de usuário não suportado.");
-  }
+  } 
 }
+
 
