@@ -4,7 +4,6 @@
   "description": "Plataforma para facilitar na localização de serviços veterinários",
   "license": "ISC",
   "author": "Marcos David Golias",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
